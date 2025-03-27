@@ -1,7 +1,8 @@
 name: check-melon-tickets
 on:
   schedule:
-    - cron: '*/1 * * * *'  # 每 5 分鐘執行一次
+    - cron: '*/1 * * * *'  # 每 1 分鐘執行一次
+    - cron: '2-59/2 * * * *'  # 每 2 分鐘執行一次，第二個觸發點
 jobs:
   check-tickets:
     runs-on: ubuntu-latest
