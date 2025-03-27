@@ -1,22 +1,21 @@
-name: workflow
-on: push
+name: check-melon-tickets
+on:
+  schedule:
+    - cron: '*/5 * * * *'  # 每 5 分鐘執行一次
 jobs:
-  job:
+  check-tickets:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v1
-      - name: Prepare
-        run: npm ci
-      - name: Lint
-        uses: mooyoul/tslint-actions@master
+      - name: 檢查 Melon Ticket 票券
+        uses: mooyoul/melon-ticket-actions@v1.1.0
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          pattern: '*.ts'
-      - name: Build
-        run: npm run build
-      - name: Publish
-        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-        run: npx semantic-release
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          product-id: 210962  # 你的演唱會 ID
+          schedule-id: 100002  # 4/6 場次
+          seat-id: 157,158,160,174,175,176,177,396,398,400,402,403,404,598,599,600,601,602,604,605,607,608,609,610,614,616,617,618,621,623,653,654,656,694,709,710,711,713,737,739,740,741,742  # 1F & Floor 座位區
+      - name: 發送 Discord 通知
+        run: |
+          curl -H "Content-Type: application/json" \
+               -X POST \
+               -d '{"content": "<@&xinnnnng> 票券可購買！快來搶！"}' \
+               ${{ secrets.DISCORD_WEBHOOK_URL }}
